@@ -81,7 +81,7 @@ A robust **REST API backend** for the **Mobile Phone Shop Point of Sale (POS)** 
 |-------|-----------|
 | **Framework** | Java Spring Boot |
 | **Security** | Spring Security & JWT |
-| **Database** | MySQL |
+| **Database** | postgresql |
 | **ORM** | Spring Data JPA / Hibernate |
 | **Build Tool** | Maven |
 | **Containerization** | Docker & Docker Compose |
@@ -109,9 +109,9 @@ A fully automated pipeline runs on every push to `main`:
                                                                   │  (Azure / VPS)  │
                                                                   └────────┬────────┘
                                                                            │
-                                                                  ┌────────▼────────┐
-                                                                  │  MySQL Database │
-                                                                  └─────────────────┘
+                                                                  ┌────────▼───────────┐
+                                                                  │ postgresql Database│
+                                                                  └────────────────────┘
 ```
 
 ### Pipeline Jobs — `.github/workflows/ci-pipeline.yml`

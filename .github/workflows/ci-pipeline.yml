@@ -26,4 +26,4 @@ jobs:
           context: .
           push: true
           # Methane 'oyage-username' wenuwata oyage aththa Docker Hub username eka danna
-          tags: oyage-username/pos-backend:latest
+          tags: prasindu1/pos-backend:latest

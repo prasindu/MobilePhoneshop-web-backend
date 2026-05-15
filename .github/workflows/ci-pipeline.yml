@@ -12,25 +12,19 @@ jobs:
       - name: 1. Checkout Code
         uses: actions/checkout@v3
 
-    
       - name: 2. Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      
       - name: 3. Build and Push Docker Image
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          
           tags: prasindu1/pos-backend:latest
 
-      - name: 4. Deploy to Azure Web App
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: 'prasindu-pos-api' 
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          images: 'index.docker.io/prasindu1/pos-backend:latest'
+      #
+      - name: 4. Trigger Azure Web App to Pull New Image
+        run: curl -X POST "${{ secrets.AZURE_WEBHOOK_URL }}"

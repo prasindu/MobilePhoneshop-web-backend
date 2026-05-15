@@ -12,18 +12,25 @@ jobs:
       - name: 1. Checkout Code
         uses: actions/checkout@v3
 
-      # Docker Hub ekata auto login wena kalla
+    
       - name: 2. Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Dockerfile eka use karala build karala auto push karana kalla
+      
       - name: 3. Build and Push Docker Image
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          # Methane 'oyage-username' wenuwata oyage aththa Docker Hub username eka danna
+          
           tags: prasindu1/pos-backend:latest
+
+      - name: 4. Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'prasindu-pos-api' 
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          images: 'index.docker.io/prasindu1/pos-backend:latest'

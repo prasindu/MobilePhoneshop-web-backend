@@ -1,4 +1,4 @@
-package com.example.pos.config;
+/*package com.example.pos.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -36,4 +36,4 @@ public class WebConfig {
             }
         };
     }
-}
+}*/

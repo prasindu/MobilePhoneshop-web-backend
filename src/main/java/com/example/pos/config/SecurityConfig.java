@@ -7,9 +7,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -38,11 +40,15 @@ import java.util.Arrays;
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-    // Remove the direct injection of AuthService from SecurityConfig
-    // We'll inject it lazily in the filter instead
-
     @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
+
+    // application.properties වලින් Vercel ලින්ක් ටික කෙලින්ම ගන්නවා
+    @Value("${cors.allowed-origins}")
+    private String allowedOrigins;
+
+    @Value("${cors.allowed-methods}")
+    private String allowedMethods;
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
@@ -70,8 +76,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        
+        // "*" වෙනුවට properties ෆයිල් එකේ තියෙන ලින්ක් ටිකම දෙනවා
+        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
+        configuration.setAllowedMethods(Arrays.asList(allowedMethods.split(",")));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
 
@@ -88,8 +96,12 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/error").permitAll()
+                        
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        
+                       
+                        .requestMatchers("/api/auth/**", "/auth/**", "/error").permitAll()
+                        
                         .anyRequest().authenticated()
                 );
 
@@ -105,7 +117,6 @@ public class SecurityConfig {
         @Autowired
         private JwtUtil jwtUtil;
 
-        // Use @Lazy to break the circular dependency
         @Autowired
         @Lazy
         private AuthService authService;

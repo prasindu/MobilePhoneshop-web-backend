@@ -72,7 +72,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(Arrays.asList(
             "http://localhost:3000",
             "http://localhost:5173",
-            "https://pos-d4ph502sc-prasindus-projects-8a9c175b.vercel.app/",
+            "https://pos-web-steel.vercel.app",
             "https://mobile-phoneshop-pos-frontend-m75i.vercel.app"
         ));
         
